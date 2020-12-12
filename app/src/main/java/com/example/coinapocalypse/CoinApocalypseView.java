@@ -11,6 +11,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -30,6 +31,9 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     private Sensor gyroscoppSensor;
 
     private Dirt[] dirts;
+    private Stone[] stones;
+    private Coin coin;
+    private Heart heart;
 
     private String move = "none";
 
@@ -44,18 +48,26 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         paint.setShader(new BitmapShader(background, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT));
         setWillNotDraw(false);
 
-        player = new Player(context, sizeX, sizeY);
-
-
         if (gyroscopeHandling) {
             sensorManager = (SensorManager)context.getSystemService(SENSOR_SERVICE);
             gyroscoppSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
             sensorManager.registerListener(this, gyroscoppSensor, SensorManager.SENSOR_DELAY_GAME);
         }
-        
-        dirts = new Dirt[10];
+
+        player = new Player(context, sizeX, sizeY);
+
+        heart = new Heart(context, sizeX, sizeY);
+
+        coin = new Coin(context, sizeX, sizeY);
+
+        dirts = new Dirt[6];
         for(int i = 0; i < dirts.length; i++) {
             dirts[i] = new Dirt(context, sizeX, sizeY);
+        }
+
+        stones = new Stone[4];
+        for(int i = 0; i < stones.length; i++) {
+            stones[i] = new Stone(context, sizeX, sizeY);
         }
 
         thread = new MainThread(getHolder(), this);
@@ -73,8 +85,16 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         super.draw(canvas);
         canvas.drawBitmap(player.getPlayer(), player.getX(), player.getY(), paint);
 
+        canvas.drawBitmap(coin.getCoin(), coin.getX(), coin.getY(), paint);
+
+        canvas.drawBitmap(heart.getHeart(), heart.getX(), heart.getY(), paint);
+
         for(int i = 0; i < dirts.length; i++) {
             canvas.drawBitmap(dirts[i].getDirt(), dirts[i].getX(), dirts[i].getY(), paint);
+        }
+
+        for(int i = 0; i < stones.length; i++) {
+            canvas.drawBitmap(stones[i].getStone(), stones[i].getX(), stones[i].getY(), paint);
         }
     }
 
@@ -85,9 +105,17 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
             player.moveRight();
         }
 
+        coin.moveCoin();
+        heart.moveHeart();
+
         for(int i = 0; i < dirts.length; i++) {
             dirts[i].moveDirt();
         }
+
+        for(int i = 0; i < stones.length; i++) {
+            stones[i].moveStone();
+        }
+
         checkCollide();
         invalidate();
     }
@@ -149,16 +177,42 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     }
 
     public void checkCollide() {
+        if(coin.getCoinSize()/2 + player.getPlayerSize()/2 > calcDistance(player.getX() + 49, coin.getX() + 15, player.getY() + 37, coin.getY() + 15)){
+            coin.setNewPosition();
+            coin.addCoin();
+        }
+
+        if(heart.getHeartSize()/2 + player.getPlayerSize()/2 > calcDistance(player.getX() + 49, heart.getX() + 15, player.getY() + 37, heart.getY() + 15)){
+            heart.setNewPosition();
+            player.addLive();
+        }
+
         for (int i = 0; i < dirts.length; i++){
             if(dirts[i].getDirtSize()/2 + player.getPlayerSize()/2 > calcDistance(player.getX() + 49, dirts[i].getX() + 15, player.getY() + 37, dirts[i].getY() + 15)){
                 dirts[i].setNewPosition();
-                //playerHit();
+                playerHit();
+            }
+        }
+
+        for (int i = 0; i < stones.length; i++){
+            if(stones[i].getStoneSize()/2 + player.getPlayerSize()/2 > calcDistance(player.getX() + 49, stones[i].getX() + 15, player.getY() + 37, stones[i].getY() + 15)){
+                stones[i].setNewPosition();
+                playerHit();
             }
         }
     }
 
     private void playerHit() {
-        thread.setRunning(false);
+
+        //thread.setRunning(false);
+        MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.hit);
+        mediaPlayer.start();
+
+        player.removeLive();
+        Log.d("Zivoty", String.valueOf(player.getLives()));
+        if(player.getLives() == 0) {
+            thread.setRunning(false);
+        }
     }
 
 

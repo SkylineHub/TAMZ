@@ -13,6 +13,7 @@ public class Player {
     private int width;
     private int playerSize;
 
+    private int lives = 3;
 
     public Player(Context context, int sizeX, int sizeY) {
         posX = sizeX/2 - 50;
@@ -38,4 +39,7 @@ public class Player {
             posX += 5;
         }
     };
+    public void addLive() {lives++;}
+    public void removeLive() {lives--;}
+    public int getLives() {return lives;}
 }
