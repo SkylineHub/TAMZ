@@ -72,7 +72,7 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         for(int i = 0; i < dirts.length; i++) {
             dirts[i].moveDirt();
         }
-
+        checkCollide();
         invalidate();
     }
 
@@ -101,6 +101,18 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         }
         return super.onTouchEvent(event);
 
+    }
+
+    private double calcDistance(double x1, double x2, double y1, double y2){
+        return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+    }
+
+    public void checkCollide() {
+        for (int i = 0; i < dirts.length; i++){
+            if(dirts[i].getDirtSize()/2 + player.getPlayerSize()/2 > calcDistance(player.getX() + 49, dirts[i].getX() + 15, player.getY() + 37, dirts[i].getY() + 15)){
+                dirts[i].setNewPosition();
+            }
+        }
     }
 
     @Override

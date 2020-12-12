@@ -32,11 +32,15 @@ public class Dirt {
     public Bitmap getDirt() {return dirt;}
     public float getX() {return posX;}
     public float getY() {return posY;}
+    public int getDirtSize() {return dirtSize;}
     public void moveDirt() {
         if (posY >= height) {
             posY = -randomPositionGenerator.nextInt(1200);
         } else {
             posY += 3;
         }
+    }
+    public void setNewPosition() {
+        posY = -randomPositionGenerator.nextInt(1200);
     }
 }

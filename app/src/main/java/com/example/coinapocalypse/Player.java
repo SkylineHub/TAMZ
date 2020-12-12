@@ -27,6 +27,7 @@ public class Player {
     public Bitmap getPlayer() {return player;}
     public float getX() {return posX;}
     public float getY() {return posY;}
+    public int getPlayerSize() {return playerSize;}
     public void moveLeft() {
         if(posX >= 0) {
             posX -= 5;
