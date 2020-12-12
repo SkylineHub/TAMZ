@@ -11,9 +11,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-
-import java.io.Console;
 
 public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Callback {
     private Canvas canvas;
@@ -23,13 +20,11 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     private Paint paint;
     private Bitmap background;
 
-    private boolean running = true;
-    private boolean movingLeft = false;
-    private boolean movingRight = false;
-
-    private boolean touch = false;
+    private Dirt[] dirts;
 
     private String move = "none";
+
+    private boolean dirtDone = false;
 
     public CoinApocalypseView(Context context, int sizeX, int sizeY) {
         super(context);
@@ -41,6 +36,11 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         setWillNotDraw(false);
 
         player = new Player(context, sizeX, sizeY);
+
+        dirts = new Dirt[10];
+        for(int i = 0; i < dirts.length; i++) {
+            dirts[i] = new Dirt(context, sizeX, sizeY);
+        }
 
         thread = new MainThread(getHolder(), this);
         setFocusable(true);
@@ -56,6 +56,10 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     public void draw(Canvas canvas) {
         super.draw(canvas);
         canvas.drawBitmap(player.getPlayer(), player.getX(), player.getY(), paint);
+
+        for(int i = 0; i < dirts.length; i++) {
+            canvas.drawBitmap(dirts[i].getDirt(), dirts[i].getX(), dirts[i].getY(), paint);
+        }
     }
 
     public void update() {
@@ -64,7 +68,11 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         } else if (move == "right") {
             player.moveRight();
         }
-        Log.d("Auto", "auto");
+
+        for(int i = 0; i < dirts.length; i++) {
+            dirts[i].moveDirt();
+        }
+
         invalidate();
     }
 
