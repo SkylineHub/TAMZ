@@ -7,12 +7,18 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Shader;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Callback {
+import static android.content.Context.SENSOR_SERVICE;
+
+public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener {
     private Canvas canvas;
     private Player player;
     private MainThread thread;
@@ -20,11 +26,14 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     private Paint paint;
     private Bitmap background;
 
+    private SensorManager sensorManager;
+    private Sensor gyroscoppSensor;
+
     private Dirt[] dirts;
 
     private String move = "none";
 
-    private boolean dirtDone = false;
+    private boolean gyroscopeHandling = false;
 
     public CoinApocalypseView(Context context, int sizeX, int sizeY) {
         super(context);
@@ -37,6 +46,13 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
 
         player = new Player(context, sizeX, sizeY);
 
+
+        if (gyroscopeHandling) {
+            sensorManager = (SensorManager)context.getSystemService(SENSOR_SERVICE);
+            gyroscoppSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+            sensorManager.registerListener(this, gyroscoppSensor, SensorManager.SENSOR_DELAY_GAME);
+        }
+        
         dirts = new Dirt[10];
         for(int i = 0; i < dirts.length; i++) {
             dirts[i] = new Dirt(context, sizeX, sizeY);
@@ -100,8 +116,33 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
             }
         }
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        boolean gyroscopeHandling = false;
+        if(gyroscopeHandling) {
+            //Log.d("Pohyb:", "pohyb");
+            if(event.values[1] < -1.5) {
+                Log.d("Pohyb:", "vlevo");
+                move = "left";
+            } else if (event.values[1] > 1.5) {
+                Log.d("Pohyb:", "vpravo");
+                move = "right";
+            } else {
+                Log.d("Pohyb:", "rovne");
+                move = "none";
+            }
+        }
 
     }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+
 
     private double calcDistance(double x1, double x2, double y1, double y2){
         return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
@@ -111,9 +152,15 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         for (int i = 0; i < dirts.length; i++){
             if(dirts[i].getDirtSize()/2 + player.getPlayerSize()/2 > calcDistance(player.getX() + 49, dirts[i].getX() + 15, player.getY() + 37, dirts[i].getY() + 15)){
                 dirts[i].setNewPosition();
+                //playerHit();
             }
         }
     }
+
+    private void playerHit() {
+        thread.setRunning(false);
+    }
+
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
