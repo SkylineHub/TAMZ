@@ -6,6 +6,8 @@ import android.view.SurfaceHolder;
 public class MainThread extends Thread {
     private CoinApocalypseView coinApocalypseView;
     private SurfaceHolder surfaceHolder;
+    private Object pauseLock;
+    private boolean paused;
 
     private Canvas canvas;
 
@@ -15,6 +17,8 @@ public class MainThread extends Thread {
         super();
         this.surfaceHolder = surfaceHolder;
         this.coinApocalypseView = coinApocalypseView;
+        pauseLock = new Object();
+        paused = false;
     }
 
     @Override
@@ -26,7 +30,7 @@ public class MainThread extends Thread {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized(surfaceHolder) {
                     this.coinApocalypseView.update();
-                    this.coinApocalypseView.draw(canvas);
+                    //this.coinApocalypseView.draw(canvas);
                 }
             } catch (Exception e) {} finally {
                 if (canvas != null) {
@@ -37,6 +41,34 @@ public class MainThread extends Thread {
                     }
                 }
             }
+
+            synchronized (pauseLock) {
+                while (paused) {
+                    try {
+                        pauseLock.wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Call this on pause.
+     */
+    public void onPause() {
+        synchronized (pauseLock) {
+            paused = true;
+        }
+    }
+
+    /**
+     * Call this on resume.
+     */
+    public void onResume() {
+        synchronized (pauseLock) {
+            paused = false;
+            pauseLock.notifyAll();
         }
     }
 

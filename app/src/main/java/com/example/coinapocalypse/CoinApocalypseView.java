@@ -26,14 +26,20 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
 
     private Paint paint;
     private Bitmap background;
+    private Bitmap pause;
 
     private SensorManager sensorManager;
     private Sensor gyroscoppSensor;
+
+    private int width;
+    private int height;
 
     private Dirt[] dirts;
     private Stone[] stones;
     private Coin coin;
     private Heart heart;
+
+    private boolean running = true;
 
     private String move = "none";
 
@@ -42,11 +48,18 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     public CoinApocalypseView(Context context, int sizeX, int sizeY) {
         super(context);
         getHolder().addCallback(this);
+
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         background = BitmapFactory.decodeResource(getResources(), R.drawable.background);
         paint.setShader(new BitmapShader(background, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT));
         setWillNotDraw(false);
+
+        pause = BitmapFactory.decodeResource(context.getResources(), R.drawable.pause);
+        pause = Bitmap.createScaledBitmap(pause, 50, 50, false);
+
+        width = sizeX;
+        height = sizeY;
 
         if (gyroscopeHandling) {
             sensorManager = (SensorManager)context.getSystemService(SENSOR_SERVICE);
@@ -83,6 +96,9 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+
+        canvas.drawBitmap(pause, width - 100, 50, paint);
+
         canvas.drawBitmap(player.getPlayer(), player.getX(), player.getY(), paint);
 
         canvas.drawBitmap(coin.getCoin(), coin.getX(), coin.getY(), paint);
@@ -125,19 +141,38 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         switch (event.getAction()){
             case MotionEvent.ACTION_DOWN: {
                 float xT = event.getX();
+                float yT = event.getY();
+                Log.d("X", String.valueOf(xT));
+                Log.d("Y", String.valueOf(yT));
+                if(xT > width - 100 && xT < width - 50 && yT > 50 && yT < 100) {
+                    Log.d("Pause", "pause");
+                    if(running) {
+                        thread.onPause();
+                        running = !running;
+                        Log.d("Pause", String.valueOf(running));
+                        return true;
+                    } else if (!running) {
+                        //thread.setRunning(true);
+                        //thread.run();
+                        thread.onResume();
+                        running = !running;
+                        Log.d("Pause", String.valueOf(running));
+                        return true;
+                    }
+                }
                 if(xT > getWidth() / 2) {
-                    Log.d("Pohyb:", "right");
+                    //Log.d("Pohyb:", "right");
                     move = "right";
                     return true;
                 } else {
-                    Log.d("Pohyb:", "left");
+                    //Log.d("Pohyb:", "left");
                     move = "left";
                     return true;
                 }
             }
 
             case MotionEvent.ACTION_UP: {
-                Log.d("Pohyb:", "nahoru");
+                //Log.d("Pohyb:", "nahoru");
                 move = "none";
                 return true;
 
