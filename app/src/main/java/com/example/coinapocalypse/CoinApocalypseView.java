@@ -2,6 +2,7 @@ package com.example.coinapocalypse;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -37,6 +38,8 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     private SensorManager sensorManager;
     private Sensor gyroscoppSensor;
 
+    private GameActivity gameActivity;
+
     private int width;
     private int height;
     private int heartX;
@@ -57,9 +60,11 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
 
     private boolean gyroscopeHandling = false;
 
-    public CoinApocalypseView(Context context, int sizeX, int sizeY) {
+    public CoinApocalypseView(Context context, int sizeX, int sizeY, GameActivity myActivity) {
         super(context);
         getHolder().addCallback(this);
+
+        gameActivity = myActivity;
 
         mydb = new DBHelper(context);
 
@@ -293,7 +298,8 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         Log.d("Zivoty", String.valueOf(player.getLives()));
         if(player.getLives() == 0) {
             mydb.insertItem("Skyline", coin.getCoins());
-            //thread.setRunning(false);
+            thread.setRunning(false);
+            gameActivity.backToMenu();
         }
     }
 

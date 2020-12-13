@@ -3,6 +3,7 @@ package com.example.coinapocalypse;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -29,9 +30,14 @@ public class GameActivity extends AppCompatActivity {
         display.getSize(size);
 
         this.context=this;
-        coinApocalypseView = new CoinApocalypseView(context, size.x, size.y);
+        coinApocalypseView = new CoinApocalypseView(context, size.x, size.y, this);
         setContentView(coinApocalypseView);
-
         //setContentView(R.layout.activity_game);
+    }
+
+    protected void backToMenu() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
