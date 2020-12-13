@@ -17,7 +17,7 @@ public class Player {
 
     public Player(Context context, int sizeX, int sizeY) {
         posX = sizeX/2 - 50;
-        posY = sizeY - 200;
+        posY = sizeY - 150;
         width = sizeX;
         playerSize = 100;
 

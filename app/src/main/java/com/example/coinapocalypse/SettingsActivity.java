@@ -37,6 +37,9 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putString("nick", name.getText().toString());
                 editor.putBoolean("gyroscope", gyroscope.isChecked());
                 editor.commit();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
         Button buttonScore = findViewById(R.id.buttonBack2);

@@ -37,6 +37,7 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     private Paint paint;
     private Bitmap background;
     private Bitmap pause;
+    private Bitmap floor;
 
     private SensorManager sensorManager;
     private Sensor gyroscoppSensor;
@@ -89,6 +90,9 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         pause = BitmapFactory.decodeResource(context.getResources(), R.drawable.pause);
         pause = Bitmap.createScaledBitmap(pause, 50, 50, false);
 
+        floor = BitmapFactory.decodeResource(context.getResources(), R.drawable.floor);
+        floor = Bitmap.createScaledBitmap(floor, 1195, 410, false);
+
         width = sizeX;
         height = sizeY;
 
@@ -139,6 +143,8 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         super.draw(canvas);
 
         canvas.drawBitmap(pause, width - 100, 50, paint);
+
+        canvas.drawBitmap(floor, -100, height - 200, paint);
 
         canvas.drawBitmap(player.getPlayer(), player.getX(), player.getY(), paint);
 
