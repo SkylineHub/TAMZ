@@ -77,7 +77,7 @@ public class DBHelper extends SQLiteOpenHelper{
             String name = res.getString(res.getColumnIndex(ITEM_COLUMN_NAME));
             String score = res.getString(res.getColumnIndex(ITEM_COLUMN_SCORE));
             int id = res.getInt(0);
-            arrayList.add("Pokus: " + id + "     Name: " + name + "     Score: " + score);
+            arrayList.add("Attempt: " + id + "     Nick: " + name + "     Score: " + score);
             res.moveToNext();
         }
 

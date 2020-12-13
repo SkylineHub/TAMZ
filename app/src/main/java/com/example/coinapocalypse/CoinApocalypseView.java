@@ -32,6 +32,8 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
 
     private DBHelper mydb;
 
+    private MediaPlayer mediaPlayer;
+
     private Paint paint;
     private Bitmap background;
     private Bitmap pause;
@@ -92,7 +94,7 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
 
         if (gyroscopeHandling) {
             sensorManager = (SensorManager)context.getSystemService(SENSOR_SERVICE);
-            gyroscoppSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+            gyroscoppSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             sensorManager.registerListener(this, gyroscoppSensor, SensorManager.SENSOR_DELAY_GAME);
         }
 
@@ -241,12 +243,12 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     public void onSensorChanged(SensorEvent event) {
         if(gyroscopeHandling) {
             //Log.d("Pohyb:", "pohyb");
-            if(event.values[1] < -1.5) {
+            if(event.values[0] < -1.0) {
                 Log.d("Pohyb:", "vlevo");
-                move = "left";
-            } else if (event.values[1] > 1.5) {
-                Log.d("Pohyb:", "vpravo");
                 move = "right";
+            } else if (event.values[0] > 1.0) {
+                Log.d("Pohyb:", "vpravo");
+                move = "left";
             } else {
                 Log.d("Pohyb:", "rovne");
                 move = "none";
@@ -270,11 +272,15 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         if(coin.getCoinSize()/2 + player.getPlayerSize()/2 > calcDistance(player.getX() + 49, coin.getX() + 15, player.getY() + 37, coin.getY() + 15)){
             coin.setNewPosition();
             coin.addCoin();
+            mediaPlayer = MediaPlayer.create(getContext(), R.raw.coin);
+            mediaPlayer.start();
         }
 
         if(heart.getHeartSize()/2 + player.getPlayerSize()/2 > calcDistance(player.getX() + 49, heart.getX() + 15, player.getY() + 37, heart.getY() + 15)){
             heart.setNewPosition();
             player.addLive();
+            mediaPlayer = MediaPlayer.create(getContext(), R.raw.heal);
+            mediaPlayer.start();
         }
 
         for (int i = 0; i < dirts.length; i++){
@@ -295,7 +301,7 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     private void playerHit() {
 
         //thread.setRunning(false);
-        MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.hit);
+        mediaPlayer = MediaPlayer.create(getContext(), R.raw.hit);
         mediaPlayer.start();
 
         player.removeLive();

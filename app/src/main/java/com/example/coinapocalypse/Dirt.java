@@ -11,8 +11,10 @@ public class Dirt {
 
     private float posX;
     private float posY;
+    private int width;
     private int height;
     private int dirtSize;
+    private int speed;
 
     Random randomPositionGenerator;
 
@@ -20,8 +22,10 @@ public class Dirt {
         randomPositionGenerator = new Random();
         posX = randomPositionGenerator.nextInt(sizeX - dirtSize);
         posY = -randomPositionGenerator.nextInt(1200);
+        speed = randomPositionGenerator.nextInt(10);
+        width = sizeX;
         height = sizeY;
-        dirtSize = 25;
+        dirtSize = 45;
 
         randomPositionGenerator = new Random();
 
@@ -37,10 +41,12 @@ public class Dirt {
         if (posY >= height) {
             posY = -randomPositionGenerator.nextInt(1200);
         } else {
-            posY += 3;
+            posY += speed;
         }
     }
     public void setNewPosition() {
+        posX = randomPositionGenerator.nextInt(width - dirtSize);
         posY = -randomPositionGenerator.nextInt(1200);
+        speed = randomPositionGenerator.nextInt(7);
     }
 }

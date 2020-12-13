@@ -11,8 +11,10 @@ public class Stone {
 
     private float posX;
     private float posY;
+    private int width;
     private int height;
     private int stoneSize;
+    private int speed;
 
     Random randomPositionGenerator;
 
@@ -20,8 +22,10 @@ public class Stone {
         randomPositionGenerator = new Random();
         posX = randomPositionGenerator.nextInt(sizeX - stoneSize);
         posY = -randomPositionGenerator.nextInt(1200);
+        speed = randomPositionGenerator.nextInt(8);
+        width = sizeX;
         height = sizeY;
-        stoneSize = 35;
+        stoneSize = 65;
 
         randomPositionGenerator = new Random();
 
@@ -37,10 +41,12 @@ public class Stone {
         if (posY >= height) {
             posY = -randomPositionGenerator.nextInt(1200);
         } else {
-            posY += 2;
+            posY += speed;
         }
     }
     public void setNewPosition() {
+        posX = randomPositionGenerator.nextInt(width - stoneSize);
         posY = -randomPositionGenerator.nextInt(1200);
+        speed = randomPositionGenerator.nextInt(7);
     }
 }

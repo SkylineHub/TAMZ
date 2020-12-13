@@ -24,7 +24,7 @@ public class Coin {
         posY = -randomPositionGenerator.nextInt(1200);
         width = sizeX;
         height = sizeY;
-        coinSize = 25;
+        coinSize = 45;
 
         randomPositionGenerator = new Random();
 

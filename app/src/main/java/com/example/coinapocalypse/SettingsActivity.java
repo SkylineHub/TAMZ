@@ -22,12 +22,16 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        Button buttonSave = (Button)findViewById(R.id.buttonSave);
+        name = findViewById(R.id.editTextNick);
+        gyroscope = findViewById(R.id.switchGyroscope);
+
+        sharedpreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
+        name.setText(sharedpreferences.getString("nick", "Player"));
+        gyroscope.setChecked(sharedpreferences.getBoolean("gyroscope", false));
+
+        Button buttonSave = findViewById(R.id.buttonSave);
         buttonSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                name = findViewById(R.id.editTextNick);
-                gyroscope = (Switch) findViewById(R.id.switchGyroscope);
-
                 sharedpreferences = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedpreferences.edit();
                 editor.putString("nick", name.getText().toString());
@@ -35,7 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.commit();
             }
         });
-        Button buttonScore = (Button)findViewById(R.id.buttonBack2);
+        Button buttonScore = findViewById(R.id.buttonBack2);
         buttonScore.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);

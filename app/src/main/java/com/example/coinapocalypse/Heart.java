@@ -11,8 +11,10 @@ public class Heart {
 
     private float posX;
     private float posY;
+    private int width;
     private int height;
     private int heartSize;
+    private int speed;
 
     Random randomPositionGenerator;
 
@@ -20,8 +22,9 @@ public class Heart {
         randomPositionGenerator = new Random();
         posX = randomPositionGenerator.nextInt(sizeX - heartSize);
         posY = -randomPositionGenerator.nextInt(1200);
+        width = sizeX;
         height = sizeY;
-        heartSize = 25;
+        heartSize = 45;
 
         randomPositionGenerator = new Random();
 
@@ -41,6 +44,7 @@ public class Heart {
         }
     }
     public void setNewPosition() {
+        posX = randomPositionGenerator.nextInt(width - heartSize);
         posY = -randomPositionGenerator.nextInt(1200);
     }
 }
