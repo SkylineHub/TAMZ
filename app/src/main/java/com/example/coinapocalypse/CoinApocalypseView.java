@@ -3,6 +3,7 @@ package com.example.coinapocalypse;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -55,18 +56,22 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     private boolean running = true;
 
     private String move = "none";
+    private String playerNick;
 
     TextPaint textPaint;
 
-    private boolean gyroscopeHandling = false;
+    private boolean gyroscopeHandling;
 
-    public CoinApocalypseView(Context context, int sizeX, int sizeY, GameActivity myActivity) {
+    public CoinApocalypseView(Context context, int sizeX, int sizeY, GameActivity myActivity, String nick, Boolean gyroscope) {
         super(context);
         getHolder().addCallback(this);
 
         gameActivity = myActivity;
 
         mydb = new DBHelper(context);
+
+        playerNick = nick;
+        gyroscopeHandling = gyroscope;
 
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
@@ -234,7 +239,6 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        boolean gyroscopeHandling = false;
         if(gyroscopeHandling) {
             //Log.d("Pohyb:", "pohyb");
             if(event.values[1] < -1.5) {
@@ -297,7 +301,7 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         player.removeLive();
         Log.d("Zivoty", String.valueOf(player.getLives()));
         if(player.getLives() == 0) {
-            mydb.insertItem("Skyline", coin.getCoins());
+            mydb.insertItem(playerNick, coin.getCoins());
             thread.setRunning(false);
             gameActivity.backToMenu();
         }
