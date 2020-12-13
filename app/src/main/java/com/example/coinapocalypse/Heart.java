@@ -35,7 +35,7 @@ public class Heart {
     public int getHeartSize() {return heartSize;}
     public void moveHeart() {
         if (posY >= height) {
-            posY = -randomPositionGenerator.nextInt(5200);
+            posY = -randomPositionGenerator.nextInt(15200);
         } else {
             posY += 5;
         }

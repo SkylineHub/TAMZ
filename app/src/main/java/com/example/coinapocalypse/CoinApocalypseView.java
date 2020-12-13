@@ -1,5 +1,6 @@
 package com.example.coinapocalypse;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +13,9 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -33,18 +37,25 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
 
     private int width;
     private int height;
+    private int heartX;
 
     private Dirt[] dirts;
     private Stone[] stones;
     private Coin coin;
     private Heart heart;
+    private HeartBar[] heartBar;
+    private CoinBar coinBar;
+    private int coins = 0;
 
     private boolean running = true;
 
     private String move = "none";
 
+    TextPaint textPaint;
+
     private boolean gyroscopeHandling = false;
 
+    @SuppressLint("ResourceAsColor")
     public CoinApocalypseView(Context context, int sizeX, int sizeY) {
         super(context);
         getHolder().addCallback(this);
@@ -54,6 +65,11 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         background = BitmapFactory.decodeResource(getResources(), R.drawable.background);
         paint.setShader(new BitmapShader(background, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT));
         setWillNotDraw(false);
+
+        textPaint = new TextPaint();
+        textPaint.setAntiAlias(true);
+        textPaint.setTextSize(24 * getResources().getDisplayMetrics().density);
+        textPaint.setColor(0xFFFFFFFF);
 
         pause = BitmapFactory.decodeResource(context.getResources(), R.drawable.pause);
         pause = Bitmap.createScaledBitmap(pause, 50, 50, false);
@@ -71,7 +87,17 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
 
         heart = new Heart(context, sizeX, sizeY);
 
+        heartBar = new HeartBar[3];
+        heartX = 50;
+        for(int i = 0; i < heartBar.length; i++) {
+            Log.d("New object", "object" + i);
+            heartBar[i] = new HeartBar(context, heartX);
+            heartX += 75;
+        }
+
         coin = new Coin(context, sizeX, sizeY);
+
+        coinBar = new CoinBar(context);
 
         dirts = new Dirt[6];
         for(int i = 0; i < dirts.length; i++) {
@@ -103,7 +129,13 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
 
         canvas.drawBitmap(coin.getCoin(), coin.getX(), coin.getY(), paint);
 
+        canvas.drawBitmap(coinBar.getCoinBar(), coinBar.getX(), coinBar.getY(), paint);
+
         canvas.drawBitmap(heart.getHeart(), heart.getX(), heart.getY(), paint);
+
+        for(int i = 0; i < player.getLives(); i++) {
+            canvas.drawBitmap(heartBar[i].getHeartBar(), heartBar[i].getX(), heartBar[i].getY(), paint);
+        }
 
         for(int i = 0; i < dirts.length; i++) {
             canvas.drawBitmap(dirts[i].getDirt(), dirts[i].getX(), dirts[i].getY(), paint);
@@ -112,6 +144,14 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         for(int i = 0; i < stones.length; i++) {
             canvas.drawBitmap(stones[i].getStone(), stones[i].getX(), stones[i].getY(), paint);
         }
+
+        coins = coin.getCoins();
+        int width = (int) textPaint.measureText(String.valueOf(coins));
+        StaticLayout staticLayout = new StaticLayout(String.valueOf(coins), textPaint, (int) width, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0, false);
+        canvas.save();
+        canvas.translate(125, 120);
+        staticLayout.draw(canvas);
+        canvas.restore();
     }
 
     public void update() {
@@ -122,7 +162,10 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         }
 
         coin.moveCoin();
-        heart.moveHeart();
+
+        if(player.getLives() < 3) {
+            heart.moveHeart();
+        }
 
         for(int i = 0; i < dirts.length; i++) {
             dirts[i].moveDirt();
