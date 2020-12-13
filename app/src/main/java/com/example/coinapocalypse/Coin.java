@@ -11,6 +11,7 @@ public class Coin {
 
     private float posX;
     private float posY;
+    private int width;
     private int height;
     private int coinSize;
     private int coins = 0;
@@ -21,6 +22,7 @@ public class Coin {
         randomPositionGenerator = new Random();
         posX = randomPositionGenerator.nextInt(sizeX - coinSize);
         posY = -randomPositionGenerator.nextInt(1200);
+        width = sizeX;
         height = sizeY;
         coinSize = 25;
 
@@ -42,6 +44,7 @@ public class Coin {
         }
     }
     public void setNewPosition() {
+        posX = randomPositionGenerator.nextInt(width - coinSize);
         posY = -randomPositionGenerator.nextInt(1200);
     }
     public void addCoin() {coins++;};

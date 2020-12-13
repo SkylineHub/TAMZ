@@ -28,6 +28,8 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     private Player player;
     private MainThread thread;
 
+    private DBHelper mydb;
+
     private Paint paint;
     private Bitmap background;
     private Bitmap pause;
@@ -55,10 +57,11 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
 
     private boolean gyroscopeHandling = false;
 
-    @SuppressLint("ResourceAsColor")
     public CoinApocalypseView(Context context, int sizeX, int sizeY) {
         super(context);
         getHolder().addCallback(this);
+
+        mydb = new DBHelper(context);
 
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
@@ -289,7 +292,8 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         player.removeLive();
         Log.d("Zivoty", String.valueOf(player.getLives()));
         if(player.getLives() == 0) {
-            thread.setRunning(false);
+            mydb.insertItem("Skyline", coin.getCoins());
+            //thread.setRunning(false);
         }
     }
 

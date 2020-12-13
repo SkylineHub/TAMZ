@@ -7,8 +7,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    DBHelper mydb;
+    ListView itemListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +27,22 @@ public class MainActivity extends AppCompatActivity {
 
         // Set No Title
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        setContentView(R.layout.activity_score);
+
         Log.d("Start", "First");
         Intent intent = new Intent(getApplicationContext(), GameActivity.class);
-        startActivity(intent);
+        //startActivity(intent);
+        //finish();
 
-        setContentView(R.layout.activity_main);
+        mydb = new DBHelper(this);
+        ArrayList<String> arrayList = new ArrayList<String>();
+        arrayList = mydb.getItemList();
+        ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, arrayList);
+
+        itemListView = findViewById(R.id.listView1);
+        itemListView.setAdapter(arrayAdapter);
+
+        //setContentView(R.layout.activity_main);
     }
 }
