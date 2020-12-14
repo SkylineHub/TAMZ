@@ -20,7 +20,7 @@ public class Heart {
 
     public Heart(Context context, int sizeX, int sizeY) {
         randomPositionGenerator = new Random();
-        posX = randomPositionGenerator.nextInt(sizeX - heartSize);
+        posX = randomPositionGenerator.nextInt(sizeX - 2 * heartSize);
         posY = -randomPositionGenerator.nextInt(1200);
         width = sizeX;
         height = sizeY;
@@ -44,7 +44,7 @@ public class Heart {
         }
     }
     public void setNewPosition() {
-        posX = randomPositionGenerator.nextInt(width - heartSize);
+        posX = randomPositionGenerator.nextInt(width - 2 * heartSize);
         posY = -randomPositionGenerator.nextInt(1200);
     }
 }

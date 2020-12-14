@@ -20,7 +20,7 @@ public class Stone {
 
     public Stone(Context context, int sizeX, int sizeY) {
         randomPositionGenerator = new Random();
-        posX = randomPositionGenerator.nextInt(sizeX - stoneSize);
+        posX = randomPositionGenerator.nextInt(sizeX - 2 * stoneSize);
         posY = -randomPositionGenerator.nextInt(1200);
         speed = randomPositionGenerator.nextInt(8);
         width = sizeX;
@@ -45,7 +45,7 @@ public class Stone {
         }
     }
     public void setNewPosition() {
-        posX = randomPositionGenerator.nextInt(width - stoneSize);
+        posX = randomPositionGenerator.nextInt(width - 2 * stoneSize);
         posY = -randomPositionGenerator.nextInt(1200);
         speed = randomPositionGenerator.nextInt(7);
     }

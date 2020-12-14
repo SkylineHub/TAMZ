@@ -20,7 +20,7 @@ public class Coin {
 
     public Coin(Context context, int sizeX, int sizeY) {
         randomPositionGenerator = new Random();
-        posX = randomPositionGenerator.nextInt(sizeX - coinSize);
+        posX = randomPositionGenerator.nextInt(sizeX - 2 * coinSize);
         posY = -randomPositionGenerator.nextInt(1200);
         width = sizeX;
         height = sizeY;
@@ -44,7 +44,7 @@ public class Coin {
         }
     }
     public void setNewPosition() {
-        posX = randomPositionGenerator.nextInt(width - coinSize);
+        posX = randomPositionGenerator.nextInt(width - 2 * coinSize);
         posY = -randomPositionGenerator.nextInt(1200);
     }
     public void addCoin() {coins++;};

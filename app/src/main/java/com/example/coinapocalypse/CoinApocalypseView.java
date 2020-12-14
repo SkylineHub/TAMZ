@@ -37,6 +37,7 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     private Paint paint;
     private Bitmap background;
     private Bitmap pause;
+    private Bitmap play;
     private Bitmap floor;
 
     private SensorManager sensorManager;
@@ -90,6 +91,9 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
         pause = BitmapFactory.decodeResource(context.getResources(), R.drawable.pause);
         pause = Bitmap.createScaledBitmap(pause, 50, 50, false);
 
+        play = BitmapFactory.decodeResource(context.getResources(), R.drawable.play);
+        play = Bitmap.createScaledBitmap(play, 50, 50, false);
+
         floor = BitmapFactory.decodeResource(context.getResources(), R.drawable.floor);
         floor = Bitmap.createScaledBitmap(floor, 1195, 410, false);
 
@@ -142,7 +146,11 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        canvas.drawBitmap(pause, width - 100, 50, paint);
+        if(running){
+            canvas.drawBitmap(pause, width - 100, 50, paint);
+        } else {
+            canvas.drawBitmap(play, width - 100, 50, paint);
+        }
 
         canvas.drawBitmap(floor, -100, height - 200, paint);
 
@@ -211,8 +219,9 @@ public class CoinApocalypseView extends SurfaceView implements SurfaceHolder.Cal
                 if(xT > width - 100 && xT < width - 50 && yT > 50 && yT < 100) {
                     Log.d("Pause", "pause");
                     if(running) {
-                        thread.onPause();
                         running = !running;
+                        invalidate();
+                        thread.onPause();
                         Log.d("Pause", String.valueOf(running));
                         return true;
                     } else if (!running) {

@@ -20,7 +20,7 @@ public class Dirt {
 
     public Dirt(Context context, int sizeX, int sizeY) {
         randomPositionGenerator = new Random();
-        posX = randomPositionGenerator.nextInt(sizeX - dirtSize);
+        posX = randomPositionGenerator.nextInt(sizeX - 2 * dirtSize);
         posY = -randomPositionGenerator.nextInt(1200);
         speed = randomPositionGenerator.nextInt(10);
         width = sizeX;
@@ -45,7 +45,7 @@ public class Dirt {
         }
     }
     public void setNewPosition() {
-        posX = randomPositionGenerator.nextInt(width - dirtSize);
+        posX = randomPositionGenerator.nextInt(width - 2 * dirtSize);
         posY = -randomPositionGenerator.nextInt(1200);
         speed = randomPositionGenerator.nextInt(7);
     }
